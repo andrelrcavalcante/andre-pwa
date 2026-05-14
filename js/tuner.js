@@ -223,7 +223,7 @@
       // Hold the last reading on screen for a good while after the string
       // fades — a tuner has to stay readable while you turn the peg, not
       // blink away the instant the attack loses energy.
-      if (lastDetectionAt && performance.now() - lastDetectionAt > 2600) {
+      if (lastDetectionAt && performance.now() - lastDetectionAt > 3500) {
         resetDisplay();
         freqEMA = 0;
         centsEMA = 0;

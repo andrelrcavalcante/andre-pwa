@@ -979,7 +979,9 @@ em { font-style: italic; }
   left: 0; right: 0; bottom: 0;
   height: calc(var(--nav-h) + var(--safe-b));
   padding-bottom: var(--safe-b);
-  background: rgba(6, 21, 24, 0.92);
+  /* Near-opaque so page content never shows through the bar in standalone
+     (installed-app) mode; the blur is just a subtle frost on top. */
+  background: rgba(6, 21, 24, 0.985);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   border-top: var(--hairline);
