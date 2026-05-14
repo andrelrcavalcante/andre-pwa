@@ -72,7 +72,9 @@
     // 3) Absolute-threshold search — wide enough for a low B1 (~62 Hz).
     const tauMin = Math.max(2, Math.floor(sampleRate / 520));   // ≤ 520 Hz
     const tauMax = Math.min(W - 1, Math.floor(sampleRate / 56)); // ≥ 56 Hz
-    const threshold = 0.15; // a touch more lenient → locks onto the pitch sooner
+    // Lenient enough to lock onto the thin, harmonic-heavy treble strings,
+    // whose periodicity dip is shallower than the bass strings'.
+    const threshold = 0.24;
 
     let tauEstimate = -1;
     for (let tau = tauMin; tau <= tauMax; tau++) {
@@ -203,15 +205,12 @@
       if (!listening) return;
       analyser.getFloatTimeDomainData(timeBuffer);
 
+      // Low gate so quiet treble strings still get analysed; the YIN threshold
+      // is the real arbiter of whether there's a real pitch in there.
       const level = rms(timeBuffer);
-      if (level < 0.006) {
-        if (performance.now() - lastDetectionAt > 600) {
-          els.note.textContent = "—";
-          els.note.classList.remove("is-ok", "is-flat", "is-sharp");
-        }
-      } else {
+      if (level >= 0.0035) {
         const { freq, clarity } = detectPitch(timeBuffer, audio.sampleRate);
-        if (freq > 54 && freq < 1200 && clarity > 0.8) {
+        if (freq > 54 && freq < 1200 && clarity > 0.5) {
           const note = freqToNote(freq);
           const now = performance.now();
           // A gap since the last lock means a new string was struck — snap to it.
@@ -220,6 +219,14 @@
           lastDetectionAt = now;
         }
       }
+
+      // Idle back to "—" purely on elapsed time, so a noisy room (or mic AGC
+      // lifting the noise floor) can't keep a stale note on screen.
+      if (performance.now() - lastDetectionAt > 700) {
+        els.note.textContent = "—";
+        els.note.classList.remove("is-ok", "is-flat", "is-sharp");
+      }
+
       rafId = requestAnimationFrame(frame);
     }
 
@@ -231,7 +238,10 @@
           audio: {
             echoCancellation: false,
             noiseSuppression: false,
-            autoGainControl: false
+            // On: lets the mic boost weak treble strings so you don't have to
+            // hold the phone against the guitar. Pitch detection is amplitude-
+            // independent, so this doesn't affect tuning accuracy.
+            autoGainControl: true
           }
         });
 
