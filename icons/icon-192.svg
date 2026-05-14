@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#0d2528"/>
+      <stop offset="100%" stop-color="#061518"/>
+    </radialGradient>
+  </defs>
+  <rect width="192" height="192" fill="url(#bg)"/>
+  <g fill="none" stroke="#c9a86a" stroke-width="0.8" opacity="0.35">
+    <line x1="0" y1="56" x2="192" y2="56"/>
+    <line x1="0" y1="84" x2="192" y2="84"/>
+    <line x1="0" y1="108" x2="192" y2="108"/>
+    <line x1="0" y1="128" x2="192" y2="128"/>
+    <line x1="0" y1="144" x2="192" y2="144"/>
+    <line x1="0" y1="156" x2="192" y2="156"/>
+  </g>
+  <text x="96" y="118" text-anchor="middle"
+        font-family="Cormorant Garamond, Garamond, serif"
+        font-style="italic" font-weight="500"
+        font-size="96" fill="#c9a86a"
+        letter-spacing="-2">A</text>
+</svg>

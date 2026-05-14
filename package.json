@@ -1,0 +1,11 @@
+{
+  "name": "andre-cavalcante-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Official PWA for fingerstyle guitarist André Cavalcante",
+  "scripts": {
+    "start": "npx serve -l 8080 .",
+    "dev": "python3 -m http.server 8080"
+  },
+  "license": "UNLICENSED"
+}
