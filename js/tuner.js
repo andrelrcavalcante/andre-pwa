@@ -205,10 +205,10 @@
       if (!listening) return;
       analyser.getFloatTimeDomainData(timeBuffer);
 
-      // Low gate so quiet treble strings still get analysed; the YIN threshold
-      // is the real arbiter of whether there's a real pitch in there.
+      // Low gate so the quiet tail of a ringing/decaying string still gets
+      // analysed — the YIN threshold is the real arbiter of a real pitch.
       const level = rms(timeBuffer);
-      if (level >= 0.0035) {
+      if (level >= 0.0022) {
         const { freq, clarity } = detectPitch(timeBuffer, audio.sampleRate);
         if (freq > 54 && freq < 1200 && clarity > 0.5) {
           const note = freqToNote(freq);
@@ -220,11 +220,14 @@
         }
       }
 
-      // Idle back to "—" purely on elapsed time, so a noisy room (or mic AGC
-      // lifting the noise floor) can't keep a stale note on screen.
-      if (performance.now() - lastDetectionAt > 700) {
-        els.note.textContent = "—";
-        els.note.classList.remove("is-ok", "is-flat", "is-sharp");
+      // Hold the last reading on screen for a good while after the string
+      // fades — a tuner has to stay readable while you turn the peg, not
+      // blink away the instant the attack loses energy.
+      if (lastDetectionAt && performance.now() - lastDetectionAt > 2600) {
+        resetDisplay();
+        freqEMA = 0;
+        centsEMA = 0;
+        lastDetectionAt = 0;
       }
 
       rafId = requestAnimationFrame(frame);
@@ -286,6 +289,7 @@
       timeBuffer = null;
       freqEMA = 0;
       centsEMA = 0;
+      lastDetectionAt = 0;
       if (els.tuner) {
         els.tuner.classList.remove("is-listening");
         els.toggle.textContent = "START TUNER";
