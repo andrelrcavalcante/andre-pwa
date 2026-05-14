@@ -2,7 +2,7 @@
    Strategy: stale-while-revalidate for same-origin GETs.
    Bump CACHE_VERSION when shipping changes that must invalidate. */
 
-const CACHE_VERSION = "v12";
+const CACHE_VERSION = "v14";
 const CACHE_NAME = `andre-${CACHE_VERSION}`;
 // Thumbnails live in their own cache so a version bump doesn't wipe them.
 const THUMB_CACHE = "andre-thumbs";
@@ -17,8 +17,9 @@ const PRECACHE = [
   "/js/metronome.js",
   "/data/songs.json",
   "/data/shows.json",
-  "/icons/icon-192.svg",
-  "/icons/icon-512.svg"
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/icon-180.png"
 ];
 
 self.addEventListener("install", (event) => {
