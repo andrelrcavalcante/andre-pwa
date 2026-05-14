@@ -72,7 +72,7 @@
     // 3) Absolute-threshold search — wide enough for a low B1 (~62 Hz).
     const tauMin = Math.max(2, Math.floor(sampleRate / 520));   // ≤ 520 Hz
     const tauMax = Math.min(W - 1, Math.floor(sampleRate / 56)); // ≥ 56 Hz
-    const threshold = 0.12;
+    const threshold = 0.15; // a touch more lenient → locks onto the pitch sooner
 
     let tauEstimate = -1;
     for (let tau = tauMin; tau <= tauMax; tau++) {
@@ -169,9 +169,17 @@
       return bestDist <= 250 ? bestIdx : -1;
     }
 
-    function updateDisplay(freq, cents, name, octave) {
-      freqEMA  = freqEMA  ? freqEMA  * 0.6 + freq  * 0.4 : freq;
-      centsEMA = isFinite(centsEMA) ? centsEMA * 0.55 + cents * 0.45 : cents;
+    function updateDisplay(freq, cents, name, octave, freshAttack) {
+      // On a fresh note attack (or the first reading) snap straight to the
+      // detected value so the note appears instantly; otherwise smooth lightly
+      // so the needle stays steady without lagging.
+      if (freshAttack || !freqEMA) {
+        freqEMA = freq;
+        centsEMA = cents;
+      } else {
+        freqEMA  = freqEMA  * 0.5 + freq  * 0.5;
+        centsEMA = centsEMA * 0.5 + cents * 0.5;
+      }
 
       els.note.textContent = name + (octave != null ? `${octave}` : "");
       els.freq.textContent = freqEMA.toFixed(1);
@@ -196,17 +204,20 @@
       analyser.getFloatTimeDomainData(timeBuffer);
 
       const level = rms(timeBuffer);
-      if (level < 0.01) {
+      if (level < 0.006) {
         if (performance.now() - lastDetectionAt > 600) {
           els.note.textContent = "—";
           els.note.classList.remove("is-ok", "is-flat", "is-sharp");
         }
       } else {
         const { freq, clarity } = detectPitch(timeBuffer, audio.sampleRate);
-        if (freq > 54 && freq < 1200 && clarity > 0.85) {
+        if (freq > 54 && freq < 1200 && clarity > 0.8) {
           const note = freqToNote(freq);
-          updateDisplay(freq, note.cents, note.name, note.octave);
-          lastDetectionAt = performance.now();
+          const now = performance.now();
+          // A gap since the last lock means a new string was struck — snap to it.
+          const freshAttack = now - lastDetectionAt > 180;
+          updateDisplay(freq, note.cents, note.name, note.octave, freshAttack);
+          lastDetectionAt = now;
         }
       }
       rafId = requestAnimationFrame(frame);
