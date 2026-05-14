@@ -1111,9 +1111,18 @@ em { font-style: italic; }
   .stat__num { font-size: 19px; }
 }
 
-@media (min-width: 431px) {
+/* Tablet / desktop only — keep the app a centred phone-width column.
+   Breakpoint is 600px so large phones (Pro Max ≈ 430–440px wide) still
+   get the normal full-width mobile layout. */
+@media (min-width: 600px) {
   #app { max-width: 480px; margin: 0 auto; border-left: var(--hairline); border-right: var(--hairline); }
-  .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); }
+  .bottom-nav {
+    left: 50%;
+    right: auto;            /* release the base rule's right:0 */
+    width: 100%;
+    max-width: 480px;
+    transform: translateX(-50%);
+  }
   .install-pill { right: calc(50vw - 240px + 16px); }
 }
 
