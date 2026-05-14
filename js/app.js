@@ -229,7 +229,7 @@
     window.scrollTo(0, 0);
 
     if (window.__tuner) window.__tuner.setTuning(song.strings);
-    if (window.__metronome) window.__metronome.setSongBpm(song.bpm);
+    if (window.__metronome) window.__metronome.setSongBpm(song.bpm, song.timeSignature);
   }
 
   function bindSongDetail() {
