@@ -2,7 +2,7 @@
    Strategy: stale-while-revalidate for same-origin GETs.
    Bump CACHE_VERSION when shipping changes that must invalidate. */
 
-const CACHE_VERSION = "v10";
+const CACHE_VERSION = "v11";
 const CACHE_NAME = `andre-${CACHE_VERSION}`;
 // Thumbnails live in their own cache so a version bump doesn't wipe them.
 const THUMB_CACHE = "andre-thumbs";
