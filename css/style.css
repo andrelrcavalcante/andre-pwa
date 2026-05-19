@@ -26,7 +26,7 @@
   --radius: 2px;
   --hairline: 0.5px solid var(--line);
 
-  --nav-h: 58px;
+  --nav-h: 78px;
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-t: env(safe-area-inset-top, 0px);
 }
@@ -979,9 +979,7 @@ em { font-style: italic; }
   left: 0; right: 0; bottom: 0;
   height: calc(var(--nav-h) + var(--safe-b));
   padding-bottom: var(--safe-b);
-  /* Near-opaque so page content never shows through the bar in standalone
-     (installed-app) mode; the blur is just a subtle frost on top. */
-  background: rgba(6, 21, 24, 0.985);
+  background: rgba(6, 21, 24, 0.92);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   border-top: var(--hairline);
@@ -1081,6 +1079,127 @@ em { font-style: italic; }
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ───────────── Language picker ───────────── */
+.lang-picker {
+  position: fixed;
+  top: calc(12px + var(--safe-t));
+  right: 14px;
+  z-index: 60;
+}
+.lang-picker__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 8px 10px;
+  border: 0.5px solid var(--gold-dim);
+  border-radius: var(--radius);
+  background: rgba(6, 21, 24, 0.78);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  color: var(--gold);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.lang-picker__btn:hover { border-color: var(--gold); }
+.lang-picker__btn[aria-expanded="true"] { border-color: var(--gold); }
+.lang-picker__flag {
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0;
+  filter: saturate(1.05);
+}
+.lang-picker__code { line-height: 1; }
+.lang-picker__chev {
+  display: inline-flex;
+  margin-left: 2px;
+  color: var(--gold);
+  transition: transform 0.2s ease;
+}
+.lang-picker__chev svg { width: 10px; height: 7px; display: block; }
+.lang-picker__btn[aria-expanded="true"] .lang-picker__chev {
+  transform: rotate(180deg);
+}
+
+.lang-picker__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  padding: 6px 0;
+  list-style: none;
+  border: 0.5px solid var(--gold-dim);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(70% 60% at 50% 0%, rgba(201, 168, 106, 0.08), transparent 70%),
+    rgba(10, 30, 34, 0.96);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7);
+  animation: langMenuIn 0.18s ease;
+}
+.lang-picker__menu[hidden] { display: none; }
+@keyframes langMenuIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lang-picker__opt {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.lang-picker__opt:hover {
+  background: rgba(201, 168, 106, 0.08);
+}
+.lang-picker__opt.is-active {
+  color: var(--gold);
+}
+.lang-picker__opt-flag {
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: 0;
+  flex: 0 0 auto;
+}
+.lang-picker__opt-name {
+  flex: 1 1 auto;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+}
+.lang-picker__opt.is-active .lang-picker__opt-name {
+  font-weight: 500;
+}
+.lang-picker__opt-dot {
+  width: 6px; height: 6px;
+  border-radius: 999px;
+  background: var(--gold);
+  box-shadow: 0 0 8px rgba(201, 168, 106, 0.7);
+  flex: 0 0 auto;
+}
+
+/* On tiny phones, tighten the button so it doesn't crowd the hero corner. */
+@media (max-width: 359px) {
+  .lang-picker__btn { padding: 7px 10px 7px 8px; gap: 6px; font-size: 10px; }
+  .lang-picker__menu { min-width: 168px; }
+}
+
+/* Center the picker over the desktop max-width frame. */
+@media (min-width: 431px) {
+  .lang-picker { right: calc(50vw - 240px + 14px); }
+}
+
 /* ───────────── Install pill (Android) ───────────── */
 .install-pill {
   position: fixed;
@@ -1111,18 +1230,9 @@ em { font-style: italic; }
   .stat__num { font-size: 19px; }
 }
 
-/* Tablet / desktop only — keep the app a centred phone-width column.
-   Breakpoint is 600px so large phones (Pro Max ≈ 430–440px wide) still
-   get the normal full-width mobile layout. */
-@media (min-width: 600px) {
+@media (min-width: 431px) {
   #app { max-width: 480px; margin: 0 auto; border-left: var(--hairline); border-right: var(--hairline); }
-  .bottom-nav {
-    left: 50%;
-    right: auto;            /* release the base rule's right:0 */
-    width: 100%;
-    max-width: 480px;
-    transform: translateX(-50%);
-  }
+  .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); }
   .install-pill { right: calc(50vw - 240px + 16px); }
 }
 

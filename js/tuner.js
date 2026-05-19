@@ -72,9 +72,7 @@
     // 3) Absolute-threshold search — wide enough for a low B1 (~62 Hz).
     const tauMin = Math.max(2, Math.floor(sampleRate / 520));   // ≤ 520 Hz
     const tauMax = Math.min(W - 1, Math.floor(sampleRate / 56)); // ≥ 56 Hz
-    // Lenient enough to lock onto the thin, harmonic-heavy treble strings,
-    // whose periodicity dip is shallower than the bass strings'.
-    const threshold = 0.24;
+    const threshold = 0.15; // a touch more lenient → locks onto the pitch sooner
 
     let tauEstimate = -1;
     for (let tau = tauMin; tau <= tauMax; tau++) {
@@ -205,12 +203,15 @@
       if (!listening) return;
       analyser.getFloatTimeDomainData(timeBuffer);
 
-      // Low gate so the quiet tail of a ringing/decaying string still gets
-      // analysed — the YIN threshold is the real arbiter of a real pitch.
       const level = rms(timeBuffer);
-      if (level >= 0.0022) {
+      if (level < 0.006) {
+        if (performance.now() - lastDetectionAt > 600) {
+          els.note.textContent = "—";
+          els.note.classList.remove("is-ok", "is-flat", "is-sharp");
+        }
+      } else {
         const { freq, clarity } = detectPitch(timeBuffer, audio.sampleRate);
-        if (freq > 54 && freq < 1200 && clarity > 0.5) {
+        if (freq > 54 && freq < 1200 && clarity > 0.8) {
           const note = freqToNote(freq);
           const now = performance.now();
           // A gap since the last lock means a new string was struck — snap to it.
@@ -219,32 +220,20 @@
           lastDetectionAt = now;
         }
       }
-
-      // Hold the last reading on screen for a good while after the string
-      // fades — a tuner has to stay readable while you turn the peg, not
-      // blink away the instant the attack loses energy.
-      if (lastDetectionAt && performance.now() - lastDetectionAt > 3500) {
-        resetDisplay();
-        freqEMA = 0;
-        centsEMA = 0;
-        lastDetectionAt = 0;
-      }
-
       rafId = requestAnimationFrame(frame);
     }
+
+    function tt(key) { return window.__i18n ? window.__i18n.t(key) : key; }
 
     async function start() {
       if (listening) return;
       try {
-        els.status.textContent = "Requesting microphone…";
+        els.status.textContent = tt("tuner.status.requesting");
         stream = await navigator.mediaDevices.getUserMedia({
           audio: {
             echoCancellation: false,
             noiseSuppression: false,
-            // On: lets the mic boost weak treble strings so you don't have to
-            // hold the phone against the guitar. Pitch detection is amplitude-
-            // independent, so this doesn't affect tuning accuracy.
-            autoGainControl: true
+            autoGainControl: false
           }
         });
 
@@ -261,15 +250,15 @@
 
         listening = true;
         els.tuner.classList.add("is-listening");
-        els.toggle.textContent = "STOP TUNER";
-        els.status.textContent = "Listening — play any string.";
+        els.toggle.textContent = tt("tuner.stop");
+        els.status.textContent = tt("tuner.status.listening");
         rafId = requestAnimationFrame(frame);
       } catch (err) {
         console.error(err);
         els.status.textContent =
           err && err.name === "NotAllowedError"
-            ? "Microphone access denied. Enable it in your browser settings."
-            : "Could not access the microphone.";
+            ? tt("tuner.status.denied")
+            : tt("tuner.status.error");
       }
     }
 
@@ -289,12 +278,23 @@
       timeBuffer = null;
       freqEMA = 0;
       centsEMA = 0;
-      lastDetectionAt = 0;
       if (els.tuner) {
         els.tuner.classList.remove("is-listening");
-        els.toggle.textContent = "START TUNER";
-        els.status.textContent = "Microphone access will be requested.";
+        els.toggle.textContent = tt("tuner.start");
+        els.status.textContent = tt("tuner.status.idle");
         resetDisplay();
+      }
+    }
+
+    function onI18nChange() {
+      if (!els.tuner) return;
+      // Toggle button + status reflect the current state.
+      if (listening) {
+        els.toggle.textContent = tt("tuner.stop");
+        els.status.textContent = tt("tuner.status.listening");
+      } else {
+        els.toggle.textContent = tt("tuner.start");
+        els.status.textContent = tt("tuner.status.idle");
       }
     }
 
@@ -305,6 +305,7 @@
       els.toggle.addEventListener("click", () => {
         if (listening) stop(); else start();
       });
+      document.addEventListener("i18n:change", onI18nChange);
     }
 
     return { init, setTuning, start, stop };

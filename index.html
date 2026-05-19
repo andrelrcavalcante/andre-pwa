@@ -9,23 +9,34 @@
   <title>André Cavalcante</title>
 
   <link rel="manifest" href="/manifest.json"/>
-  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png?v=15"/>
-  <link rel="apple-touch-icon" href="/icons/icon-180.png?v=15"/>
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg"/>
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="mobile-web-app-capable" content="yes"/>
-  <!-- "black" (not black-translucent): the web view starts BELOW the status
-       bar instead of bleeding content under it, so nothing overlaps. -->
-  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-  <meta name="apple-mobile-web-app-title" content="André Cavalcante"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="André"/>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap"/>
 
-  <link rel="stylesheet" href="/css/style.css?v=15"/>
+  <link rel="stylesheet" href="/css/style.css?v=8"/>
 </head>
 <body>
+
+  <!-- ───────────────────────── Language picker ───────────────────────── -->
+  <div class="lang-picker" id="lang-picker">
+    <button class="lang-picker__btn" id="lang-picker-btn"
+            type="button" aria-haspopup="listbox" aria-expanded="false"
+            data-i18n-attr="aria-label:lang.picker.aria">
+      <span class="lang-picker__flag" id="lang-picker-flag">🇺🇸</span>
+      <span class="lang-picker__code" id="lang-picker-code">EN</span>
+      <span class="lang-picker__chev" aria-hidden="true">
+        <svg viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </button>
+    <ul class="lang-picker__menu" id="lang-picker-menu" role="listbox" hidden></ul>
+  </div>
 
   <!-- ───────────────────────── App shell ───────────────────────── -->
   <main id="app">
@@ -45,50 +56,50 @@
           <div class="hero__media-fade"></div>
         </div>
         <div class="hero__inner">
-          <p class="eyebrow">FINGERSTYLE GUITARIST</p>
+          <p class="eyebrow" data-i18n="home.eyebrow">FINGERSTYLE GUITARIST</p>
           <h1 class="hero__title">ANDRÉ<br/><em>CAVALCANTE</em></h1>
-          <p class="hero__sub">This is not just guitar.<br/><span class="hero__sub-gold">This is cinematic fingerstyle.</span></p>
+          <p class="hero__sub"><span data-i18n="home.hero.sub1">This is not just guitar.</span><br/><span class="hero__sub-gold" data-i18n="home.hero.sub2">This is cinematic fingerstyle.</span></p>
         </div>
       </header>
 
       <section class="stats">
         <div class="stat">
           <span class="stat__num">412K</span>
-          <span class="stat__label">Instagram</span>
+          <span class="stat__label" data-i18n="home.stats.instagram">Instagram</span>
         </div>
         <div class="stat">
           <span class="stat__num">146K</span>
-          <span class="stat__label">YouTube</span>
+          <span class="stat__label" data-i18n="home.stats.youtube">YouTube</span>
         </div>
         <div class="stat">
           <span class="stat__num">25M</span>
-          <span class="stat__label">Views</span>
+          <span class="stat__label" data-i18n="home.stats.views">Views</span>
         </div>
         <div class="stat">
           <span class="stat__num">120+</span>
-          <span class="stat__label">Countries</span>
+          <span class="stat__label" data-i18n="home.stats.countries">Countries</span>
         </div>
       </section>
 
       <section class="block">
-        <h2 class="section-title"><em>Upcoming</em> shows</h2>
+        <h2 class="section-title" data-i18n="home.shows.title"><em>Upcoming</em> shows</h2>
         <ul class="shows-preview" id="home-shows"></ul>
-        <button class="btn btn--ghost" data-go="live">FULL TOUR</button>
+        <button class="btn btn--ghost" data-go="live" data-i18n="home.shows.cta">FULL TOUR</button>
       </section>
 
       <section class="block">
         <article class="story-card">
-          <p class="story-card__kicker">THE STORY BEHIND THE SOUND</p>
-          <h3 class="story-card__title">
+          <p class="story-card__kicker" data-i18n="home.story.kicker">THE STORY BEHIND THE SOUND</p>
+          <h3 class="story-card__title" data-i18n="home.story.title">
             Every note carries <em>emotion.</em><br/>
             Every silence tells a <em>story.</em>
           </h3>
-          <p class="story-card__body">
+          <p class="story-card__body" data-i18n="home.story.body">
             I'm André Cavalcante — a cinematic fingerstyle guitarist.
             Blending classical technique, flamenco influences and modern percussive
             elements, my music is designed to be felt — not just heard.
           </p>
-          <p class="story-card__body story-card__closer">
+          <p class="story-card__body story-card__closer" data-i18n="home.story.closer">
             <em>I don't just play the guitar. I create atmosphere.</em>
           </p>
         </article>
@@ -96,15 +107,15 @@
 
       <section class="block">
         <div class="collection-card">
-          <p class="collection-card__kicker">THE COLLECTION</p>
-          <h3 class="collection-card__title">MasterTabs &amp; <em>Tablatures</em></h3>
-          <p class="collection-card__body">Cinematic fingerstyle arrangements and full studio video lessons — designed to be played, studied and felt.</p>
-          <button class="btn btn--gold" data-go="tabs">EXPLORE THE COLLECTION</button>
+          <p class="collection-card__kicker" data-i18n="home.collection.kicker">THE COLLECTION</p>
+          <h3 class="collection-card__title" data-i18n="home.collection.title">MasterTabs &amp; <em>Tablatures</em></h3>
+          <p class="collection-card__body" data-i18n="home.collection.body">Cinematic fingerstyle arrangements and full studio video lessons — designed to be played, studied and felt.</p>
+          <button class="btn btn--gold" data-go="tabs" data-i18n="home.collection.cta">EXPLORE THE COLLECTION</button>
         </div>
       </section>
 
       <section class="block social-block">
-        <h2 class="section-title"><em>Follow</em></h2>
+        <h2 class="section-title" data-i18n="home.follow.title"><em>Follow</em></h2>
         <div class="social-grid">
           <a class="social-tile" href="https://www.instagram.com/andrelrcavalcante/" target="_blank" rel="noopener">
             <span class="social-tile__label">Instagram</span>
@@ -129,12 +140,12 @@
     <!-- ============== MUSIC ============== -->
     <section class="tab" data-tab="music" aria-label="Music" hidden>
       <header class="page-head">
-        <p class="eyebrow">LISTEN</p>
-        <h1 class="page-title"><em>Music</em></h1>
+        <p class="eyebrow" data-i18n="music.eyebrow">LISTEN</p>
+        <h1 class="page-title" data-i18n="music.title"><em>Music</em></h1>
       </header>
 
       <section class="block">
-        <h2 class="section-title"><em>Featured</em> video</h2>
+        <h2 class="section-title" data-i18n="music.featured"><em>Featured</em> video</h2>
         <div class="embed embed--video">
           <iframe
             src="https://www.youtube.com/embed/E8e_XYk_1AU?rel=0"
@@ -146,7 +157,7 @@
       </section>
 
       <section class="block">
-        <h2 class="section-title"><em>Full</em> catalog</h2>
+        <h2 class="section-title" data-i18n="music.catalog"><em>Full</em> catalog</h2>
         <div class="embed embed--audio">
           <iframe
             src="https://open.spotify.com/embed/artist/7LNwdGKKXpM9DXEx3TagtG?utm_source=generator&theme=0"
@@ -157,7 +168,7 @@
       </section>
 
       <section class="block">
-        <h2 class="section-title"><em>Also on</em></h2>
+        <h2 class="section-title" data-i18n="music.also-on"><em>Also on</em></h2>
         <div class="platform-grid">
           <a class="platform" href="https://music.apple.com/search?term=Andr%C3%A9%20Cavalcante" target="_blank" rel="noopener">
             <span>Apple Music</span><span aria-hidden="true">→</span>
@@ -180,9 +191,9 @@
       <!-- LIST VIEW -->
       <div class="play__list" id="play-list-view">
         <header class="page-head">
-          <p class="eyebrow">PLAY ALONG</p>
-          <h1 class="page-title"><em>Songs</em></h1>
-          <p class="page-sub">Pick a track. The tuner is preset to its tuning.</p>
+          <p class="eyebrow" data-i18n="play.eyebrow">PLAY ALONG</p>
+          <h1 class="page-title" data-i18n="play.title"><em>Songs</em></h1>
+          <p class="page-sub" data-i18n="play.sub">Pick a track. The tuner is preset to its tuning.</p>
         </header>
 
         <ul class="song-list" id="song-list"></ul>
@@ -190,7 +201,7 @@
 
       <!-- DETAIL VIEW -->
       <div class="play__detail" id="play-detail-view" hidden>
-        <button class="back-btn" id="song-back" aria-label="Back to song list">← BACK</button>
+        <button class="back-btn" id="song-back" aria-label="Back to song list" data-i18n="play.back">← BACK</button>
 
         <header class="song-head">
           <div class="song-video" id="song-video"></div>
@@ -198,16 +209,16 @@
           <h1 class="page-title"><em id="song-title">Song title</em></h1>
           <p class="song-head__meta" id="song-meta-line"></p>
           <div class="song-meta">
-            <span><strong>Tuning</strong> <em id="song-tuning"></em></span>
-            <span><strong>Capo</strong> <em id="song-capo"></em></span>
+            <span><strong data-i18n="play.tuning">Tuning</strong> <em id="song-tuning"></em></span>
+            <span><strong data-i18n="play.capo">Capo</strong> <em id="song-capo"></em></span>
           </div>
         </header>
 
         <!-- TUNER -->
         <section class="tuner" id="tuner">
           <header class="tuner__head">
-            <p class="eyebrow">TUNER</p>
-            <h2 class="section-title"><em>Tune to</em> <span id="tuner-tuning-name">E A D G B E</span></h2>
+            <p class="eyebrow" data-i18n="tuner.eyebrow">TUNER</p>
+            <h2 class="section-title"><span data-i18n="tuner.tune-to"><em>Tune to</em></span> <span id="tuner-tuning-name">E A D G B E</span></h2>
             <p class="tuner__note-line" id="tuner-note-line" hidden></p>
           </header>
 
@@ -232,16 +243,16 @@
           <ul class="tuner__strings" id="tuner-strings" aria-label="Target strings"></ul>
 
           <div class="tuner__controls">
-            <button class="btn btn--gold" id="tuner-toggle">START TUNER</button>
-            <p class="tuner__status" id="tuner-status">Microphone access will be requested.</p>
+            <button class="btn btn--gold" id="tuner-toggle" data-i18n="tuner.start">START TUNER</button>
+            <p class="tuner__status" id="tuner-status" data-i18n="tuner.status.idle">Microphone access will be requested.</p>
           </div>
         </section>
 
         <!-- METRONOME -->
         <section class="metronome" id="metronome">
           <header class="tuner__head">
-            <p class="eyebrow">METRONOME</p>
-            <h2 class="section-title"><em>Practice at</em> <span id="metro-song-tempo">100 BPM</span></h2>
+            <p class="eyebrow" data-i18n="metro.eyebrow">METRONOME</p>
+            <h2 class="section-title"><span data-i18n="metro.practice-at"><em>Practice at</em></span> <span id="metro-song-tempo">100 BPM</span></h2>
           </header>
 
           <div class="metro__display">
@@ -256,18 +267,18 @@
           <div class="metro__dots" id="metro-dots" aria-hidden="true"></div>
 
           <div class="tuner__controls">
-            <button class="btn btn--gold" id="metro-toggle">START METRONOME</button>
-            <button class="metro__reset" id="metro-reset" hidden>RESET TO SONG TEMPO</button>
-            <p class="tuner__status" id="metro-status">Tap start to practice in time.</p>
+            <button class="btn btn--gold" id="metro-toggle" data-i18n="metro.start">START METRONOME</button>
+            <button class="metro__reset" id="metro-reset" hidden data-i18n="metro.reset">RESET TO SONG TEMPO</button>
+            <p class="tuner__status" id="metro-status" data-i18n="metro.status.idle">Tap start to practice in time.</p>
           </div>
         </section>
 
         <!-- GET THE TAB -->
         <section class="block">
-          <a class="btn btn--gold btn--block" id="song-buy" target="_blank" rel="noopener">BUY THE TAB</a>
+          <a class="btn btn--gold btn--block" id="song-buy" target="_blank" rel="noopener" data-i18n="song.buy">BUY THE TAB</a>
           <div class="tab-cta__row">
-            <a class="btn btn--ghost btn--block" id="song-mastertab" target="_blank" rel="noopener">GET MASTERTAB</a>
-            <a class="btn btn--ghost btn--block" id="song-tablature" target="_blank" rel="noopener">GET SIGNATURE TABLATURE</a>
+            <a class="btn btn--ghost btn--block" id="song-mastertab" target="_blank" rel="noopener" data-i18n="song.mastertab">GET MASTERTAB</a>
+            <a class="btn btn--ghost btn--block" id="song-tablature" target="_blank" rel="noopener" data-i18n="song.tablature">GET SIGNATURE TABLATURE</a>
           </div>
         </section>
       </div>
@@ -276,9 +287,9 @@
     <!-- ============== LIVE ============== -->
     <section class="tab" data-tab="live" aria-label="Live" hidden>
       <header class="page-head">
-        <p class="eyebrow">EUROPEAN TOUR 2026</p>
-        <h1 class="page-title">The music comes<br/><em>alive</em> on stage.</h1>
-        <p class="page-sub">Each performance is unique. Each moment, unrepeatable.</p>
+        <p class="eyebrow" data-i18n="live.eyebrow">EUROPEAN TOUR 2026</p>
+        <h1 class="page-title" data-i18n="live.title">The music comes<br/><em>alive</em> on stage.</h1>
+        <p class="page-sub" data-i18n="live.sub">Each performance is unique. Each moment, unrepeatable.</p>
       </header>
 
       <section class="block">
@@ -289,9 +300,9 @@
     <!-- ============== TABS ============== -->
     <section class="tab" data-tab="tabs" aria-label="Tabs" hidden>
       <header class="page-head">
-        <p class="eyebrow">LEARN</p>
-        <h1 class="page-title"><em>Tabs</em></h1>
-        <p class="page-sub">The same notation André uses in the studio.</p>
+        <p class="eyebrow" data-i18n="tabs.eyebrow">LEARN</p>
+        <h1 class="page-title" data-i18n="tabs.title"><em>Tabs</em></h1>
+        <p class="page-sub" data-i18n="tabs.sub">The same notation André uses in the studio.</p>
       </header>
 
       <section class="block">
@@ -300,15 +311,15 @@
                src="https://www.andrelrcavalcante.com/img/mastertabs/holy-forever.webp"
                alt="MasterTab Experience — studio-filmed video lessons"
                loading="lazy" decoding="async"/>
-          <p class="product-card__kicker">THE VIDEO LESSONS</p>
-          <h3 class="product-card__title">MasterTab <em>Experience</em></h3>
-          <p class="product-card__body">
+          <p class="product-card__kicker" data-i18n="tabs.video.kicker">THE VIDEO LESSONS</p>
+          <h3 class="product-card__title" data-i18n="tabs.video.title">MasterTab <em>Experience</em></h3>
+          <p class="product-card__body" data-i18n="tabs.video.body">
             Studio-filmed close-ups, slow walkthroughs and full tablature — measure by measure.
           </p>
-          <p class="product-card__price"><span class="from-label">From</span> $59.90 <span class="from-label">USD</span></p>
+          <p class="product-card__price"><span class="from-label" data-i18n="tabs.from">From</span> $59.90 <span class="from-label">USD</span></p>
           <a class="btn btn--gold btn--block"
              href="https://www.andrelrcavalcante.com/collection.html#mastertabs"
-             target="_blank" rel="noopener">EXPLORE MASTERTABS</a>
+             target="_blank" rel="noopener" data-i18n="tabs.video.cta">EXPLORE MASTERTABS</a>
         </article>
 
         <article class="product-card">
@@ -318,18 +329,18 @@
                  alt="Signature Tablatures — cinematic fingerstyle arrangements"
                  loading="lazy" decoding="async"/>
           </div>
-          <p class="product-card__kicker">THE TABLATURES</p>
-          <h3 class="product-card__title">Signature <em>Tablatures</em></h3>
-          <p class="product-card__body">
+          <p class="product-card__kicker" data-i18n="tabs.tab.kicker">THE TABLATURES</p>
+          <h3 class="product-card__title" data-i18n="tabs.tab.title">Signature <em>Tablatures</em></h3>
+          <p class="product-card__body" data-i18n="tabs.tab.body">
             Standard notation, tablature and Guitar Pro file — collectible cinematic arrangements.
           </p>
-          <p class="product-card__price"><span class="from-label">From</span> $14.90 <span class="from-label">USD</span></p>
+          <p class="product-card__price"><span class="from-label" data-i18n="tabs.from">From</span> $14.90 <span class="from-label">USD</span></p>
           <a class="btn btn--ghost btn--block"
              href="https://www.andrelrcavalcante.com/collection.html#tablatures"
-             target="_blank" rel="noopener">BROWSE TABLATURES</a>
+             target="_blank" rel="noopener" data-i18n="tabs.tab.cta">BROWSE TABLATURES</a>
         </article>
 
-        <p class="muted center">All purchases happen on <a href="https://www.andrelrcavalcante.com" target="_blank" rel="noopener">andrelrcavalcante.com</a>.</p>
+        <p class="muted center"><span data-i18n="tabs.purchase-note">All purchases happen on</span> <a href="https://www.andrelrcavalcante.com" target="_blank" rel="noopener">andrelrcavalcante.com</a>.</p>
       </section>
     </section>
 
@@ -339,47 +350,48 @@
   <nav class="bottom-nav" aria-label="Primary">
     <button class="nav-item is-active" data-go="home">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1V11z"/></svg>
-      <span>Home</span>
+      <span data-i18n="nav.home">Home</span>
     </button>
     <button class="nav-item" data-go="music">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm12-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/></svg>
-      <span>Music</span>
+      <span data-i18n="nav.music">Music</span>
     </button>
     <button class="nav-item nav-item--center" data-go="play">
       <span class="nav-item__pill" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M9 3v8a3 3 0 0 0 6 0V3M12 14v7"/></svg>
       </span>
-      <span>Tuner</span>
+      <span data-i18n="nav.tuner">Tuner</span>
     </button>
     <button class="nav-item" data-go="live">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v3M17 2v3M3 8h18M5 5h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg>
-      <span>Live</span>
+      <span data-i18n="nav.live">Live</span>
     </button>
     <button class="nav-item" data-go="tabs">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 9h16M4 13h16M4 17h10"/></svg>
-      <span>Tabs</span>
+      <span data-i18n="nav.tabs">Tabs</span>
     </button>
   </nav>
 
   <!-- ───────────────────────── iOS install modal ───────────────────────── -->
   <div class="modal" id="ios-install-modal" hidden role="dialog" aria-modal="true" aria-labelledby="ios-install-title">
     <div class="modal__sheet">
-      <p class="eyebrow">INSTALL</p>
-      <h3 class="modal__title" id="ios-install-title"><em>Add to Home Screen</em></h3>
+      <p class="eyebrow" data-i18n="install.eyebrow">INSTALL</p>
+      <h3 class="modal__title" id="ios-install-title" data-i18n="install.title"><em>Add to Home Screen</em></h3>
       <ol class="modal__steps">
-        <li>Tap the <strong>Share</strong> icon in Safari.</li>
-        <li>Choose <strong>Add to Home Screen</strong>.</li>
-        <li>Tap <strong>Add</strong> to finish.</li>
+        <li data-i18n="install.step1">Tap the <strong>Share</strong> icon in Safari.</li>
+        <li data-i18n="install.step2">Choose <strong>Add to Home Screen</strong>.</li>
+        <li data-i18n="install.step3">Tap <strong>Add</strong> to finish.</li>
       </ol>
-      <button class="btn btn--gold btn--block" id="ios-install-close">GOT IT</button>
+      <button class="btn btn--gold btn--block" id="ios-install-close" data-i18n="install.got-it">GOT IT</button>
     </div>
   </div>
 
   <!-- Android install pill -->
-  <button class="install-pill" id="install-pill" hidden>INSTALL APP</button>
+  <button class="install-pill" id="install-pill" hidden data-i18n="install.pill">INSTALL APP</button>
 
-  <script src="/js/tuner.js?v=15" defer></script>
-  <script src="/js/metronome.js?v=15" defer></script>
-  <script src="/js/app.js?v=15" defer></script>
+  <script src="/js/i18n.js?v=8" defer></script>
+  <script src="/js/tuner.js?v=8" defer></script>
+  <script src="/js/metronome.js?v=8" defer></script>
+  <script src="/js/app.js?v=8" defer></script>
 </body>
 </html>

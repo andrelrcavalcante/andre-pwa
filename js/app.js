@@ -1,5 +1,7 @@
 /* André Cavalcante PWA — app shell
-   Tabs, data loading, song detail wiring, PWA install flow. */
+   Tabs, data loading, song detail wiring, PWA install flow, language picker.
+   Dynamic strings (shows list, capo readout, status) re-render via the
+   i18n:change event so the whole UI swaps languages without a reload. */
 
 (() => {
   "use strict";
@@ -14,6 +16,11 @@
     currentSong: null,
     deferredInstall: null
   };
+
+  /* ─────────── i18n helpers ─────────── */
+
+  const i18n = () => window.__i18n;
+  const t = (key, params) => (i18n() ? i18n().t(key, params) : key);
 
   /* ─────────── Tab navigation ─────────── */
 
@@ -58,8 +65,15 @@
   function formatShowDate(iso) {
     const d = new Date(iso + "T20:00:00");
     const day = String(d.getUTCDate()).padStart(2, "0");
-    const month = d.toLocaleString("en", { month: "short", timeZone: "UTC" }).toUpperCase();
+    const lang = i18n() ? i18n().get() : "en";
+    const month = d.toLocaleString(lang, { month: "short", timeZone: "UTC" }).toUpperCase();
     return { day, month };
+  }
+
+  function countryName(name) {
+    const key = "country." + name;
+    const out = t(key);
+    return out === key ? name : out;
   }
 
   function renderShowsPreview() {
@@ -72,9 +86,9 @@
           <div class="show-row__date"><strong>${day}</strong><span>${month}</span></div>
           <div class="show-row__place">
             ${s.city}
-            <small>${s.country} · ${s.venue}</small>
+            <small>${countryName(s.country)} · ${s.venue}</small>
           </div>
-          <a class="show-row__cta" href="${s.ticketUrl}" target="_blank" rel="noopener">Tickets</a>
+          <a class="show-row__cta" href="${s.ticketUrl}" target="_blank" rel="noopener">${t("shows.tickets")}</a>
         </li>
       `;
     }).join("");
@@ -90,9 +104,9 @@
           <div class="show-card__date"><strong>${day}</strong><span>${month} 2026</span></div>
           <div class="show-card__place">
             ${s.city}
-            <small>${s.country} · ${s.venue}</small>
+            <small>${countryName(s.country)} · ${s.venue}</small>
           </div>
-          <a class="show-card__cta" href="${s.ticketUrl}" target="_blank" rel="noopener">Tickets</a>
+          <a class="show-card__cta" href="${s.ticketUrl}" target="_blank" rel="noopener">${t("shows.tickets")}</a>
         </li>
       `;
     }).join("");
@@ -158,7 +172,7 @@
         <div class="song-video__facade is-offline">
           <img class="song-video__img" src="${thumb}" alt="${song.title}"/>
           <span class="song-video__overlay"></span>
-          <span class="song-video__badge">Offline — reconnect to play</span>
+          <span class="song-video__badge">${t("song.offline")}</span>
         </div>`;
       return;
     }
@@ -196,17 +210,19 @@
     if (wrap) wrap.innerHTML = "";
   }
 
+  function capoText(n) {
+    return i18n() ? i18n().capoText(n) : (n ? `${n} fret` : "None");
+  }
+
   function openSong(id) {
     const song = state.songs.find((s) => s.id === id);
     if (!song) return;
     state.currentSong = song;
 
-    const ordinal = (n) => n + (n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th") + " fret";
-
     $("#song-title").textContent = song.title;
     $("#song-tuning-eyebrow").textContent = song.tuningLabel;
     $("#song-tuning").textContent = song.tuningLabel;
-    $("#song-capo").textContent = song.capo ? ordinal(song.capo) : "None";
+    $("#song-capo").textContent = capoText(song.capo);
 
     renderSongVideo(song);
 
@@ -229,7 +245,7 @@
     window.scrollTo(0, 0);
 
     if (window.__tuner) window.__tuner.setTuning(song.strings);
-    if (window.__metronome) window.__metronome.setSongBpm(song.bpm, song.timeSignature);
+    if (window.__metronome) window.__metronome.setSongBpm(song.bpm);
   }
 
   function bindSongDetail() {
@@ -250,6 +266,80 @@
         renderSongVideo(state.currentSong);
       }
     });
+  }
+
+  /* ─────────── Language picker ─────────── */
+
+  function setupLangPicker() {
+    if (!i18n()) return;
+
+    const btn   = $("#lang-picker-btn");
+    const menu  = $("#lang-picker-menu");
+    const flag  = $("#lang-picker-flag");
+    const code  = $("#lang-picker-code");
+    if (!btn || !menu) return;
+
+    function syncButton() {
+      const m = i18n().meta();
+      if (flag) flag.textContent = m.flag;
+      if (code) code.textContent = m.code;
+    }
+
+    function renderMenu() {
+      const langs = i18n().supported();
+      const meta = i18n().LANG_META;
+      const cur = i18n().get();
+      menu.innerHTML = langs.map((l) => {
+        const m = meta[l];
+        return `
+          <li role="option" aria-selected="${l === cur}" class="lang-picker__opt${l === cur ? " is-active" : ""}" data-lang="${l}">
+            <span class="lang-picker__opt-flag">${m.flag}</span>
+            <span class="lang-picker__opt-name">${m.name}</span>
+            ${l === cur ? '<span class="lang-picker__opt-dot" aria-hidden="true"></span>' : ""}
+          </li>
+        `;
+      }).join("");
+
+      menu.querySelectorAll(".lang-picker__opt").forEach((li) => {
+        li.addEventListener("click", () => {
+          const lang = li.dataset.lang;
+          i18n().set(lang);
+          close();
+        });
+      });
+    }
+
+    function open()  { menu.hidden = false; btn.setAttribute("aria-expanded", "true");  document.body.classList.add("has-lang-menu"); }
+    function close() { menu.hidden = true;  btn.setAttribute("aria-expanded", "false"); document.body.classList.remove("has-lang-menu"); }
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (menu.hidden) { renderMenu(); open(); } else { close(); }
+    });
+
+    // Tap outside or press Escape to close.
+    document.addEventListener("click", (e) => {
+      if (!menu.hidden && !menu.contains(e.target) && e.target !== btn && !btn.contains(e.target)) close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !menu.hidden) close();
+    });
+
+    document.addEventListener("i18n:change", () => {
+      syncButton();
+      renderMenu();
+      // Re-render anything that builds strings dynamically.
+      renderShowsPreview();
+      renderLiveShows();
+      // Update capo readout if a song is open.
+      if (state.currentSong) {
+        const cap = $("#song-capo");
+        if (cap) cap.textContent = capoText(state.currentSong.capo);
+      }
+      // Tuner/metronome update their own labels via their own listeners.
+    });
+
+    syncButton();
   }
 
   /* ─────────── PWA install ─────────── */
@@ -312,6 +402,7 @@
   async function init() {
     bindNav();
     bindSongDetail();
+    setupLangPicker();
     setupAndroidInstall();
     setupIOSModal();
     registerSW();

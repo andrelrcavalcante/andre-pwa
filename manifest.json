@@ -1,6 +1,6 @@
 {
   "name": "André Cavalcante",
-  "short_name": "André Cavalcante",
+  "short_name": "André",
   "description": "This is not just guitar. This is cinematic fingerstyle. Official app of André Cavalcante — music, European tour 2026, MasterTabs, and an integrated guitar tuner.",
   "start_url": "/",
   "scope": "/",
@@ -12,16 +12,16 @@
   "categories": ["music", "entertainment", "lifestyle"],
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "/icons/icon-192.svg",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/icons/icon-512.svg",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }

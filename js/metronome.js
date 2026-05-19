@@ -8,6 +8,7 @@
   const Metronome = (() => {
     const LOOKAHEAD_MS = 25;        // how often the scheduler wakes up
     const SCHEDULE_AHEAD_S = 0.12;  // how far ahead notes are scheduled
+    const BEATS_PER_BAR = 4;
     const MIN_BPM = 30;
     const MAX_BPM = 280;
 
@@ -15,13 +16,13 @@
     let audio = null;
     let bpm = 100;
     let songBpm = 100;
-    let beatsPerBar = 4;            // derived from the song's time signature
-    let timeSignature = "4/4";
     let running = false;
     let currentBeat = 0;
     let nextNoteTime = 0;
     let timerId = null;
     let holdTimer = null;
+
+    function tt(key) { return window.__i18n ? window.__i18n.t(key) : key; }
 
     function cacheDOM() {
       els.section = document.getElementById("metronome");
@@ -37,7 +38,7 @@
 
     function renderDots() {
       els.dots.innerHTML = "";
-      for (let i = 0; i < beatsPerBar; i++) {
+      for (let i = 0; i < BEATS_PER_BAR; i++) {
         const d = document.createElement("span");
         d.className = "metro-dot";
         els.dots.appendChild(d);
@@ -50,17 +51,9 @@
       if (els.reset) els.reset.hidden = bpm === songBpm;
     }
 
-    // Called when a song opens — sets its tempo and time signature.
-    function setSongBpm(value, signature) {
+    function setSongBpm(value) {
       songBpm = value && value > 0 ? value : 100;
-      timeSignature = /^\d{1,2}\/\d{1,2}$/.test(signature || "") ? signature : "4/4";
-      const top = parseInt(timeSignature.split("/")[0], 10);
-      beatsPerBar = top >= 2 && top <= 12 ? top : 4;
-      if (els.tempo) {
-        els.tempo.textContent =
-          songBpm + " BPM" + (timeSignature !== "4/4" ? " · " + timeSignature : "");
-      }
-      renderDots();
+      if (els.tempo) els.tempo.textContent = songBpm + " BPM";
       setBpm(songBpm);
     }
 
@@ -90,7 +83,7 @@
       while (nextNoteTime < audio.currentTime + SCHEDULE_AHEAD_S) {
         scheduleClick(currentBeat, nextNoteTime);
         nextNoteTime += 60 / bpm;
-        currentBeat = (currentBeat + 1) % beatsPerBar;
+        currentBeat = (currentBeat + 1) % BEATS_PER_BAR;
       }
       timerId = setTimeout(scheduler, LOOKAHEAD_MS);
     }
@@ -105,9 +98,8 @@
       currentBeat = 0;
       nextNoteTime = audio.currentTime + 0.08;
       els.section.classList.add("is-running");
-      els.toggle.textContent = "STOP METRONOME";
-      els.status.textContent =
-        "Counting in " + timeSignature + " — adjust the tempo to practice.";
+      els.toggle.textContent = tt("metro.stop");
+      els.status.textContent = tt("metro.status.running");
       scheduler();
     }
 
@@ -117,9 +109,20 @@
       timerId = null;
       if (els.section) {
         els.section.classList.remove("is-running");
-        els.toggle.textContent = "START METRONOME";
-        els.status.textContent = "Tap start to practice in time.";
+        els.toggle.textContent = tt("metro.start");
+        els.status.textContent = tt("metro.status.idle");
         els.dots.querySelectorAll(".metro-dot").forEach((d) => d.classList.remove("is-on"));
+      }
+    }
+
+    function onI18nChange() {
+      if (!els.section) return;
+      if (running) {
+        els.toggle.textContent = tt("metro.stop");
+        els.status.textContent = tt("metro.status.running");
+      } else {
+        els.toggle.textContent = tt("metro.start");
+        els.status.textContent = tt("metro.status.idle");
       }
     }
 
@@ -152,6 +155,7 @@
       els.reset.addEventListener("click", () => setBpm(songBpm));
       bindHold(els.dec, -1);
       bindHold(els.inc, +1);
+      document.addEventListener("i18n:change", onI18nChange);
     }
 
     return { init, stop, setSongBpm };
