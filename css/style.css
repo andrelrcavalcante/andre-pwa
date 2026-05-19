@@ -1008,9 +1008,12 @@ em { font-style: italic; }
   stroke-linejoin: round;
 }
 .nav-item span:not(.nav-item__pill) {
-  font-size: 9.5px;
-  letter-spacing: 0.18em;
+  font-size: 9px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1.1;
+  max-width: 100%;
 }
 .nav-item.is-active { color: var(--gold); }
 
@@ -1228,6 +1231,10 @@ em { font-style: italic; }
   .page-title { font-size: 44px; }
   .tuner__note { font-size: 72px; }
   .stat__num { font-size: 19px; }
+  .nav-item span:not(.nav-item__pill) {
+    font-size: 8.5px;
+    letter-spacing: 0.06em;
+  }
 }
 
 @media (min-width: 431px) {

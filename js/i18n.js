@@ -132,7 +132,7 @@
       "nav.home": "Início",
       "nav.music": "Música",
       "nav.tuner": "Afinador",
-      "nav.live": "Ao Vivo",
+      "nav.live": "Shows",
       "nav.tabs": "Cifras",
 
       "home.eyebrow": "VIOLONISTA FINGERSTYLE",
@@ -234,8 +234,8 @@
       "nav.home": "Inicio",
       "nav.music": "Música",
       "nav.tuner": "Afinador",
-      "nav.live": "En Vivo",
-      "nav.tabs": "Tablaturas",
+      "nav.live": "Vivo",
+      "nav.tabs": "Tabs",
 
       "home.eyebrow": "GUITARRISTA FINGERSTYLE",
       "home.hero.sub1": "Esto no es solo guitarra.",
@@ -335,7 +335,7 @@
 
       "nav.home": "Start",
       "nav.music": "Musik",
-      "nav.tuner": "Stimmer",
+      "nav.tuner": "Tuner",
       "nav.live": "Live",
       "nav.tabs": "Tabs",
 
@@ -436,10 +436,10 @@
       "meta.description": "フィンガースタイル・ギタリスト André Cavalcante 公式アプリ — 音楽、ツアー、タブ譜、内蔵チューナー。",
 
       "nav.home": "ホーム",
-      "nav.music": "ミュージック",
+      "nav.music": "音楽",
       "nav.tuner": "チューナー",
       "nav.live": "ライブ",
-      "nav.tabs": "タブ譜",
+      "nav.tabs": "タブ",
 
       "home.eyebrow": "フィンガースタイル・ギタリスト",
       "home.hero.sub1": "これは単なるギターではない。",
